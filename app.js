@@ -25,8 +25,10 @@ configureGoogleOAuth();
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
+const CLIENT_URL = (process.env.CLIENT_URL || "http://localhost:5173").replace(/\/+$/, "");
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: CLIENT_URL,
   credentials: true
 }));
 
@@ -37,7 +39,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));

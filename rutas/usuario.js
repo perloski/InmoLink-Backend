@@ -4,6 +4,8 @@ import { setAuthCookie, generateToken } from "../servicios/servicioAuth.js";
 
 const router = Router();
 
+const CLIENT_URL = (process.env.CLIENT_URL || "http://localhost:5173").replace(/\/+$/, "") + "/";
+
 // Inicia login redirige a Google
 router.get(
   "/google",
@@ -16,7 +18,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}login`,
+    failureRedirect: CLIENT_URL + "login",
   }),
   (req, res) => {
     // Generar token JWT y establecer cookie
@@ -24,7 +26,7 @@ router.get(
     setAuthCookie(res, token);
     
     // Redirigir al Frontend con autenticación establecida
-    res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}auth/google/callback`);
+    res.redirect(CLIENT_URL + "auth/google/callback");
   }
 );
 
@@ -41,7 +43,7 @@ router.get("/user", (req, res) => {
 //  Logout
 router.get("/logout", (req, res) => {
   req.logout(() => {});
-  res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}login`);
+  res.redirect(CLIENT_URL + "login");
 });
 
 export default router;
